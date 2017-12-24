@@ -1,48 +1,49 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import YTSearch from 'youtube-api-search';
-
-import SearchBar from './components/searc_bar';
-import Videolist from './components/video_lists';
-import VideoDetail from './components/video_details';
-import API_KEY from "./components/constants";
+import Add from './components/button';
 
 
-class App extends Component {
+class Counter extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            videos: [],
-            selectedVideo: null
-        };
-
-
+        this.state = {number: 4};
+        this.addition = this.addition.bind(this);
     }
 
-    videoSearch(term) {
-        YTSearch({key: API_KEY, term: term}, (videos) => {
-            console.log(videos);
-            this.setState({videos: videos, selectedVideo: videos[0]});
-        });
+    addition(term) {
+        let n = this.state.number;
+        if (term === "add" && n < 100) {
+            this.setState({number: n + 1})
+        }
 
+        if (term === "subs" && n > 0) {
+            this.setState({number: n - 1})
+        }
+        if (term === "inc") {
+            setInterval(() => {
+                if (this.state.number < 100)
+                    this.setState({number: this.state.number + 1})
+            }, 1000)
+        }
+        if (term === "dec") {
+            setInterval(() => {
+                if (this.state.number > 0)
+                    this.setState({number: this.state.number - 1})
+            }, 1000)
+        }
     }
+
 
     render() {
         return (
             <div>
-                <SearchBar onChangeSearchTerm={this.videoSearch.bind(this)}/>
-                <VideoDetail video={this.state.selectedVideo}/>
-                <Videolist videos={this.state.videos}
-                           onVideoSelect={(video) => {
-                               this.setState({selectedVideo: video})
-
-                           }}/>
+                <p>{this.state.number}</p>
+                <Add add={this.addition}/>
             </div>
-
-
         );
-    }
+    };
+
 
 }
 
-ReactDOM.render(<App/>, document.querySelector('.container'));
+ReactDOM.render(<Counter/>, document.querySelector('.container'));
